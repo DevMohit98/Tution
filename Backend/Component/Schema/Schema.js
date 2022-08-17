@@ -34,8 +34,24 @@ const TeacherSchema = mongoose.Schema({
   },
   Course: [
     {
-      CourseName: String,
-      Duration: String,
+      CourseName: {
+        type: String,
+      },
+      BatchInfo: [
+        {
+          _id: false,
+          CourseName: {
+            type: String,
+          },
+          Timing: {
+            type: Date,
+          },
+          NoOfSeat: {
+            type: Date,
+          },
+        },
+      ],
+      _id: false,
     },
   ],
   Pincode: {

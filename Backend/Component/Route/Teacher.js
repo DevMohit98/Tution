@@ -27,7 +27,7 @@ router.route("/sign").post((request, respond) => {
   insertTeacherData();
 });
 router.route("/batch").post((request, respond) => {
-  const { CourseName, Name, Duration } = request.body;
+  const { CourseName, Name, Timing, TotalNo } = request.body;
   const addBatchDetail = async () => {
     try {
       const result = await Teacher.updateMany(
@@ -36,7 +36,11 @@ router.route("/batch").post((request, respond) => {
           $push: {
             Course: {
               CourseName: CourseName,
-              Duration: Duration,
+              BatchInfo: {
+                CourseName: CourseName,
+                Timing: Timing,
+                TotalNo: TotalNo,
+              },
             },
           },
         }
@@ -47,5 +51,15 @@ router.route("/batch").post((request, respond) => {
     }
   };
   addBatchDetail();
+});
+router.route("/detail").get((request, respond) => {
+  const findData = async () => {
+    const findAllDetail = await Teacher.find(
+      {},
+      { _id: 0, Name: 1, Course: 1 }
+    );
+    respond.json({ repsonse: true, data: findAllDetail });
+  };
+  findData();
 });
 module.exports = router;

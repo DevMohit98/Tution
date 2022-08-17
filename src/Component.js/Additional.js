@@ -1,8 +1,10 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 const AdditionalData = () => {
   const { name } = useParams();
   const [Additional, setAdditional] = useState({
+    Name: name,
     CourseName: "",
     Timing: "",
     TotalNo: "",
@@ -17,7 +19,14 @@ const AdditionalData = () => {
   };
   const HandleAdditionalSubmit = (event) => {
     event.preventDefault();
-    console.log(Additional);
+    axios
+      .post("http://localhost:8080/teacher/batch", Additional)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
   return (
     <>
@@ -26,7 +35,7 @@ const AdditionalData = () => {
         <input
           type="text"
           className="form-control m-3"
-          placeholder="enter name of organization"
+          placeholder="enter coursename"
           value={Additional.CourseName}
           name="CourseName"
           onChange={HandleAdditional}
