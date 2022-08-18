@@ -1,13 +1,15 @@
 const express = require("express");
 const { Teacher } = require("../Model/Model");
 let router = express.Router();
+const bcrypt = require("bcryptjs");
 router.route("/sign").post((request, respond) => {
-  const { Name, Passoword, Pincode, ContactNo } = request.body;
+  const { Name, Password, Pincode, ContactNo } = request.body;
   const insertTeacherData = async () => {
+    const cryptTeacherPassword = await bcrypt.hash(Password, 10);
     try {
       const data = {
         Name: Name,
-        Passoword: Passoword,
+        Password: cryptTeacherPassword,
         Pincode: Pincode,
         ContactNo: ContactNo,
       };
@@ -61,5 +63,23 @@ router.route("/detail").get((request, respond) => {
     respond.json({ repsonse: true, data: findAllDetail });
   };
   findData();
+});
+router.route("/login").post((request, respond) => {
+  const { Name, Password } = request.body;
+  const isLogin = async (name, pass) => {
+    try {
+      const FindTeacher = await Teacher.findOne({ Name: name });
+      console.log(FindTeacher.Password);
+      const isMatch = await bcrypt.compare(pass, FindTeacher.Password);
+      if (isMatch) {
+        respond.json({ response: true, msg: "password matched" });
+      } else {
+        respond.json({ response: false, msg: "passowrd doesnot match" });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  isLogin(Name, Password);
 });
 module.exports = router;
